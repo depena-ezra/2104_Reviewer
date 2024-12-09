@@ -7,8 +7,6 @@ import os
 import random
 
 USER_SETS = 'sets'
-ACP_SETS = 'acp_sets'
-ALL_SETS = USER_SETS and ACP_SETS
 HISTORY_FOLDER = 'history'
 
 class ThinkUNextApp:
@@ -53,9 +51,6 @@ class ThinkUNextApp:
         self.button_frame = tk.Frame(self.sidebar_frame, bg="#FAB12F")
         self.button_frame.pack(side=tk.TOP, padx=40)
 
-        self.acp_button = ttk.Button(self.button_frame, text="ACP Sets", command=lambda: self.switch_panel("acp"))
-        self.acp_button.pack(fill=tk.X, pady=10)
-
         self.create_button = ttk.Button(self.button_frame, text="Create Set", command=lambda: self.switch_panel("create"))
         self.create_button.pack(fill=tk.X, pady=10)
 
@@ -89,7 +84,6 @@ class ThinkUNextApp:
         else:
             print("Image could not be loaded.")
 
-        self.acp_panel = self.create_acp_panel()
         self.create_panel = self.create_set_panel()
         self.edit_panel = self.create_edit_panel()
         self.review_panel = self.create_review_panel()
@@ -97,18 +91,14 @@ class ThinkUNextApp:
 
 
     def switch_panel(self, panel_name):
-        print(f"[INFO] Switching to {panel_name} panel.") 
         
         self.home_panel.pack_forget()
-        self.acp_panel.pack_forget()
         self.create_panel.pack_forget()
         self.edit_panel.pack_forget()
         self.review_panel.pack_forget()
         self.history_panel.pack_forget()
 
-        if panel_name == "acp":
-            self.acp_panel.pack(fill=tk.BOTH, expand=True)
-        elif panel_name == "create":
+        if panel_name == "create":
             self.create_panel.pack(fill=tk.BOTH, expand=True)
         elif panel_name == "edit":
             self.edit_panel.pack(fill=tk.BOTH, expand=True)
@@ -119,38 +109,6 @@ class ThinkUNextApp:
         else:
             self.home_panel.pack(fill=tk.BOTH, expand=True)
 
-
-    def create_acp_panel(self):
-        acp_panel = tk.Frame(self.content_frame, bg="#FEF3E2")
-        
-        acp_sets = {
-            "Variables": "Variables.json",
-            "String and Methods": "StringAndMethods.json",
-            "Conditionals": "Conditionals.json",
-            "Lists": "Lists.json",
-            "Loops": "Loops.json",
-            "Errors": "Errors.json"
-        }
-
-        acp_label = tk.Label(
-            acp_panel,
-            text="Choose a Problem Set to Review",
-            font=('Helvetica', 16, 'bold'),
-            bg="#FEF3E2",
-            fg="#470898"
-        )
-        acp_label.pack(pady=60)
-
-        for set_name, filename in acp_sets.items():
-            button = ttk.Button(
-                acp_panel,
-                text=set_name,
-                command=lambda file=filename: self.switch_to_review_panel(file)
-            )
-            button.pack(pady=10, ipadx=10, ipady=10)
-
-        return acp_panel
-        
     def create_set_panel(self):
         create_panel = tk.Frame(self.content_frame, bg="#FEF3E2")
 
@@ -268,8 +226,17 @@ class ThinkUNextApp:
         for widget in self.edit_panel.winfo_children():
             widget.destroy()
 
-        edit_frame = tk.Frame(self.edit_panel, bg="#FEF3E2")
-        edit_frame.pack(pady=20)
+        canvas = tk.Canvas(self.edit_panel, bg="#FEF3E2", highlightthickness=0)
+        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        scrollbar = ttk.Scrollbar(self.edit_panel, orient=tk.VERTICAL, command=canvas.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+
+        canvas.configure(yscrollcommand=scrollbar.set)
+        canvas.bind('<Configure>', lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        scrollable_frame = tk.Frame(canvas, bg="#FEF3E2")
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
 
         self.edit_entries = []
 
@@ -277,45 +244,42 @@ class ThinkUNextApp:
             question_text = question['question']
             answer_text = question['answer']
 
-            question_label = tk.Label(edit_frame, text=f"Q{idx + 1}: ", font=('Helvetica', 12), bg="#FEF3E2")
+            question_label = tk.Label(scrollable_frame, text=f"Q{idx + 1}: ", font=('Helvetica', 12), bg="#FEF3E2")
             question_label.grid(row=idx, column=0, padx=5, pady=5, sticky="w")
 
-            question_entry = tk.Entry(edit_frame, font=('Helvetica', 12), width=40)
+            question_entry = tk.Entry(scrollable_frame, font=('Helvetica', 12), width=40)
             question_entry.grid(row=idx, column=1, padx=5, pady=5)
-            question_entry.insert(0, question_text)  
+            question_entry.insert(0, question_text)
             self.edit_entries.append({"entry": question_entry, "type": "question"})
 
-            answer_label = tk.Label(edit_frame, text="Answer: ", font=('Helvetica', 12), bg="#FEF3E2")
+            answer_label = tk.Label(scrollable_frame, text="Answer: ", font=('Helvetica', 12), bg="#FEF3E2")
             answer_label.grid(row=idx, column=2, padx=5, pady=5, sticky="w")
 
-            answer_entry = tk.Entry(edit_frame, font=('Helvetica', 12), width=40)
+            answer_entry = tk.Entry(scrollable_frame, font=('Helvetica', 12), width=40)
             answer_entry.grid(row=idx, column=3, padx=5, pady=5)
-            answer_entry.insert(0, answer_text) 
+            answer_entry.insert(0, answer_text)
             self.edit_entries.append({"entry": answer_entry, "type": "answer"})
 
-            delete_button = ttk.Button(edit_frame, text="Delete", command=lambda idx=idx: self.delete_question(set_file, idx, questions))
+            delete_button = ttk.Button(scrollable_frame, text="Delete", command=lambda idx=idx: self.delete_question(set_file, idx, questions))
             delete_button.grid(row=idx, column=4, padx=5, pady=5)
 
         self.new_question_var = tk.StringVar()
         self.new_answer_var = tk.StringVar()
 
-        new_question_label = tk.Label(edit_frame, text="New Question: ", font=('Helvetica', 12), bg="#FEF3E2")
+        new_question_label = tk.Label(scrollable_frame, text="New Question: ", font=('Helvetica', 12), bg="#FEF3E2")
         new_question_label.grid(row=len(questions), column=0, padx=5, pady=5, sticky="w")
 
-        new_question_entry = tk.Entry(edit_frame, font=('Helvetica', 12), width=40, textvariable=self.new_question_var)
+        new_question_entry = tk.Entry(scrollable_frame, font=('Helvetica', 12), width=40, textvariable=self.new_question_var)
         new_question_entry.grid(row=len(questions), column=1, padx=5, pady=5)
 
-        new_answer_label = tk.Label(edit_frame, text="New Answer: ", font=('Helvetica', 12), bg="#FEF3E2")
+        new_answer_label = tk.Label(scrollable_frame, text="New Answer: ", font=('Helvetica', 12), bg="#FEF3E2")
         new_answer_label.grid(row=len(questions), column=2, padx=5, pady=5, sticky="w")
 
-        new_answer_entry = tk.Entry(edit_frame, font=('Helvetica', 12), width=40, textvariable=self.new_answer_var)
+        new_answer_entry = tk.Entry(scrollable_frame, font=('Helvetica', 12), width=40, textvariable=self.new_answer_var)
         new_answer_entry.grid(row=len(questions), column=3, padx=5, pady=5)
 
-        add_button = ttk.Button(edit_frame, text="Add Question", command=lambda: self.add_question(set_file, questions))
+        add_button = ttk.Button(scrollable_frame, text="Add Question", command=lambda: self.add_question(set_file, questions))
         add_button.grid(row=len(questions), column=4, padx=5, pady=5)
-
-        save_button = ttk.Button(self.edit_panel, text="Save Changes", command=lambda: self.save_changes(set_file, questions))
-        save_button.pack(pady=20)
 
     def add_question(self, set_file, questions):
         new_question = self.new_question_var.get().strip()
@@ -343,23 +307,6 @@ class ThinkUNextApp:
         messagebox.showinfo("Success", "Question deleted successfully!")
 
         self.edit_selected_set()  
-
-
-    def save_changes(self, set_file, questions):
-        for idx, entry_dict in enumerate(self.edit_entries):
-            if entry_dict["type"] == "question":
-                questions[idx]["question"] = entry_dict["entry"].get().strip()
-            elif entry_dict["type"] == "answer":
-                questions[idx]["answer"] = entry_dict["entry"].get().strip()
-
-        with open(set_file, 'w') as f:
-            json.dump(questions, f, indent=4)
-
-        messagebox.showinfo("Success", "Changes saved successfully!")
-
-        success_label = tk.Label(self.edit_panel, text="Changes saved successfully!", font=('Helvetica', 14, 'bold'), bg="#FEF3E2", fg="green")
-        success_label.pack(pady=10)
-
 
     def create_review_panel(self):
         USER_SETS = 'sets'

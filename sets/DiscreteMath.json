@@ -4,32 +4,12 @@
         "answer": "Set"
     },
     {
-        "question": "What is a function where every element in the domain maps to exactly one element in the codomain?",
-        "answer": "Injective"
-    },
-    {
-        "question": "What is a function where every element in the codomain has at least one element from the domain mapping to it?",
-        "answer": "Surjective"
-    },
-    {
-        "question": "What is a function that is both injective and surjective?",
-        "answer": "Bijective"
-    },
-    {
         "question": "What is the principle used for counting the number of elements in sets?",
         "answer": "Counting principle"
     },
     {
         "question": "What is the set of all possible subsets of a set?",
         "answer": "Power set"
-    },
-    {
-        "question": "What is a graph with no loops or multiple edges?",
-        "answer": "Simple"
-    },
-    {
-        "question": "What is a graph with no cycles?",
-        "answer": "Acyclic"
     },
     {
         "question": "What is the graph theory structure that connects nodes with edges?",
