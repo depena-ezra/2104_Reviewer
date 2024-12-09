@@ -1,5 +1,5 @@
 # Think U Next: Personalized Reviewer System  
-#### Video Demo: []  
+#### Video Demo: [https://drive.google.com/file/d/1kWhs9zK0bgVsLTxH6rdn3kmdEKmhy4wz/view?usp=drive_link]  
 #### Description:  
 
 **Think U Next** is a desktop application built using Python and Tkinter, designed to help students prepare for exams by offering an interactive and personalized study experience. The program provides tools for creating custom question sets, reviewing pre-built problem sets, tracking progress, and managing study materials. With a user-friendly interface, students can focus on learning without distractions or complicated navigation.  
