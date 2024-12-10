@@ -1,0 +1,22 @@
+[
+    {
+        "question": "What Python operator is used to check if a value lies within a range of two numbers?",
+        "answer": "Chained"
+    },
+    {
+        "question": "What Python operator is used for simple conditional expressions?",
+        "answer": "Ternary"
+    },
+    {
+        "question": "What statement introduced in Python 3.10 allows pattern matching in conditionals?",
+        "answer": "Match-case"
+    },
+    {
+        "question": "What Python function evaluates if at least one condition in an iterable is true?",
+        "answer": "Any"
+    },
+    {
+        "question": "What logical operator is used to combine conditions in Python?",
+        "answer": "And"
+    }
+]

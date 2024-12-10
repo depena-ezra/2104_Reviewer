@@ -7,7 +7,9 @@ import os
 import random
 
 USER_SETS = 'sets'
+ACP_SETS = 'acp_sets'
 HISTORY_FOLDER = 'history'
+
 
 class ThinkUNextApp:
     def __init__(self, root):
@@ -171,7 +173,7 @@ class ThinkUNextApp:
             self.create_new_question_var.set("")
             self.create_new_answer_var.set("")
         else:
-            messagebox.showerror("Error", "Please provide both a question and an answer.")
+            messagebox.showerror("Error", "Please provide an answer.")
 
     def finish_create_set(self):
         set_name = self.create_set_name_var.get().strip()
@@ -310,67 +312,105 @@ class ThinkUNextApp:
 
     def create_review_panel(self):
         USER_SETS = 'sets'
+        ACP_SETS = 'acp_sets'
         review_panel = tk.Frame(self.content_frame, bg="#FEF3E2")
 
         review_label = tk.Label(
-            review_panel, 
-            text="Choose a Set to Review", 
-            font=('Helvetica', 16, 'bold'), 
-            bg="#FEF3E2", 
+            review_panel,
+            text="Choose a Set to Review",
+            font=('Helvetica', 16, 'bold'),
+            bg="#FEF3E2",
             fg="#470898"
         )
-        review_label.pack(pady=(60, 5))
+        review_label.pack(pady=(60, 50))
 
-        set_files = [f[:-5] for f in os.listdir(USER_SETS) if f.endswith('.json')]
+        dropdown_frame = tk.Frame(review_panel, bg="#FEF3E2")
+        dropdown_frame.pack(pady=10)
 
-        if not set_files:
-            no_sets_label = tk.Label(
-                review_panel, 
-                text="No sets available to review.", 
-                font=('Helvetica', 14, 'bold'), 
-                bg="#FEF3E2", 
-                fg="#470898"
-            )
-            no_sets_label.pack(pady=20)
-        else:
-            self.set_var = tk.StringVar()
-            self.set_var.set(set_files[0]) 
+        user_set_files = [f[:-5] for f in os.listdir(USER_SETS) if f.endswith('.json')]
+        acp_set_files = [f[:-5] for f in os.listdir(ACP_SETS) if f.endswith('.json')]
 
-            set_dropdown = ttk.Combobox(
-                review_panel, 
-                textvariable=self.set_var, 
-                values=set_files, 
-                state="readonly", 
-                font=('Helvetica', 12)
-            )
-            set_dropdown.pack(pady=10)
+        user_set_label = tk.Label(
+            dropdown_frame,
+            text="User Sets:",
+            font=('Helvetica', 12),
+            bg="#FEF3E2"
+        )
+        user_set_label.grid(row=0, column=0, padx=50, pady=5, sticky="n")
 
-            start_review_button = ttk.Button(
-                review_panel, 
-                text="Start Review", 
-                command=self.start_review
-            )
-            start_review_button.pack(pady=20)
+        self.set_var = tk.StringVar()
+        self.set_var.set(user_set_files[0] if user_set_files else "No user sets available")
+
+        user_set_dropdown = ttk.Combobox(
+            dropdown_frame,
+            textvariable=self.set_var,
+            values=user_set_files,
+            state="readonly" if user_set_files else "disabled",
+            font=('Helvetica', 12),
+            width=25
+        )
+        user_set_dropdown.grid(row=1, column=0, padx=50, pady=5)
+
+        start_user_review_button = ttk.Button(
+            dropdown_frame,
+            text="Review User Sets",
+            command=lambda: self.start_review(USER_SETS, self.set_var.get())
+        )
+        start_user_review_button.grid(row=2, column=0, padx=50, pady=10)
+
+        acp_set_label = tk.Label(
+            dropdown_frame,
+            text="ACP Sets:",
+            font=('Helvetica', 12),
+            bg="#FEF3E2"
+        )
+        acp_set_label.grid(row=0, column=1, padx=50, pady=5, sticky="n")
+
+        self.acp_set_var = tk.StringVar()
+        self.acp_set_var.set(acp_set_files[0] if acp_set_files else "No ACP sets available")
+
+        acp_set_dropdown = ttk.Combobox(
+            dropdown_frame,
+            textvariable=self.acp_set_var,
+            values=acp_set_files,
+            state="readonly" if acp_set_files else "disabled",
+            font=('Helvetica', 12),
+            width=25
+        )
+        acp_set_dropdown.grid(row=1, column=1, padx=10, pady=5)
+
+        start_acp_review_button = ttk.Button(
+            dropdown_frame,
+            text="Review ACP Sets",
+            command=lambda: self.start_review(ACP_SETS, self.acp_set_var.get())
+        )
+        start_acp_review_button.grid(row=2, column=1, padx=10, pady=10)
 
         return review_panel
 
+    def start_review(self, folder, set_name):
+        if set_name == "No user sets available" or set_name == "No ACP sets available":
+            tk.messagebox.showerror("Error", "No valid set selected for review.")
+            return
 
-    def start_review(self):
-        set_name = self.set_var.get()
-        set_file = os.path.join(USER_SETS, f"{set_name}.json")
+        set_file = os.path.join(folder, f"{set_name}.json")
 
-        with open(set_file, 'r') as f:
-            self.questions = json.load(f)
+        try:
+            with open(set_file, 'r') as f:
+                self.questions = json.load(f)
 
-        random.shuffle(self.questions)
+            random.shuffle(self.questions)
 
-        for widget in self.review_panel.winfo_children():
-            widget.destroy()
+            for widget in self.review_panel.winfo_children():
+                widget.destroy()
 
-        self.current_question_index = 0
-        self.mistakes = []
-
-        self.display_question()
+            self.current_question_index = 0
+            self.mistakes = []
+            self.display_question()
+        except FileNotFoundError:
+            tk.messagebox.showerror("Error", f"Set file not found: {set_file}")
+        except json.JSONDecodeError:
+            tk.messagebox.showerror("Error", f"Failed to load set file: {set_file}")
 
 
     def display_question(self):
@@ -388,15 +428,15 @@ class ThinkUNextApp:
         question_label = tk.Label(
             self.review_panel,
             text=f"{question_text}",
-            font=('Helvetica', 30, 'bold'),
+            font=('Helvetica', 20, 'bold'),
             bg="#FEF3E2",
         )
         question_label.pack(pady=(220, 20))
 
-        answer_frame = tk.Frame(self.review_panel, bg="#FEF3E2") 
+        answer_frame = tk.Frame(self.review_panel, bg="#FEF3E2")
         answer_frame.pack(pady=10)
 
-        self.user_answer_entry = tk.Text(answer_frame, font=('Helvetica', 15), height=5, width=60) 
+        self.user_answer_entry = tk.Text(answer_frame, font=('Helvetica', 15), height=5, width=60)
         self.user_answer_entry.pack(side="left", fill="both", expand=True)
 
         scrollbar = tk.Scrollbar(answer_frame, command=self.user_answer_entry.yview)
@@ -406,6 +446,7 @@ class ThinkUNextApp:
 
         confirm_button = ttk.Button(self.review_panel, text="Confirm Answer", command=self.validate_answer)
         confirm_button.pack(pady=20)
+
 
     def validate_answer(self):
         print("Confirm Answer button clicked!")
@@ -443,7 +484,6 @@ class ThinkUNextApp:
     def next_question(self):
         self.current_question_index += 1
         self.display_question()
-
 
     def show_review_result(self, set_name):
         for widget in self.review_panel.winfo_children():

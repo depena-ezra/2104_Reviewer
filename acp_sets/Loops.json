@@ -1,0 +1,22 @@
+[
+    {
+        "question": "What loop allows iteration over a sequence of numbers in Python?",
+        "answer": "For"
+    },
+    {
+        "question": "What function adds indices to the iteration in a for loop?",
+        "answer": "Enumerate"
+    },
+    {
+        "question": "What Python loop should be used cautiously to avoid infinite loops?",
+        "answer": "While"
+    },
+    {
+        "question": "What is the term for functions that compute values lazily instead of storing them in memory?",
+        "answer": "Generators"
+    },
+    {
+        "question": "What unique Python construct runs an else block if a loop completes without a break?",
+        "answer": "For-else"
+    }
+]

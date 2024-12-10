@@ -1,0 +1,22 @@
+[
+    {
+        "question": "What block is used to catch and handle exceptions in Python?",
+        "answer": "Try-except"
+    },
+    {
+        "question": "What clause runs when no exceptions occur in a try-except block?",
+        "answer": "Else"
+    },
+    {
+        "question": "What Python class can you subclass to create custom exceptions?",
+        "answer": "Exception"
+    },
+    {
+        "question": "What tool in Python helps you log errors and events systematically?",
+        "answer": "Logging"
+    },
+    {
+        "question": "What common Python error occurs when trying to access an index that doesn't exist in a list?",
+        "answer": "IndexError"
+    }
+]

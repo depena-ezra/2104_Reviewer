@@ -1,0 +1,22 @@
+[
+    {
+        "question": "What property of strings ensures that their value cannot be changed after creation?",
+        "answer": "Immutable"
+    },
+    {
+        "question": "What Python feature allows extracting substrings from a string?",
+        "answer": "Slicing"
+    },
+    {
+        "question": "What method is used to remove whitespace from the beginning and end of a string?",
+        "answer": "Strip"
+    },
+    {
+        "question": "What Python method is used to join a list of strings into one?",
+        "answer": "Join"
+    },
+    {
+        "question": "What Python module is used for pattern matching and text extraction?",
+        "answer": "Re"
+    }
+]

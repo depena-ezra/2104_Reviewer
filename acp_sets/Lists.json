@@ -1,0 +1,22 @@
+[
+    {
+        "question": "What data structure in Python can store items of different types?",
+        "answer": "List"
+    },
+    {
+        "question": "What is the method to sort a list in place?",
+        "answer": "Sort"
+    },
+    {
+        "question": "What term describes extracting a subset of a list using indices?",
+        "answer": "Slicing"
+    },
+    {
+        "question": "What is the function to create a completely independent copy of a nested list?",
+        "answer": "Deepcopy"
+    },
+    {
+        "question": "What feature provides a concise way to transform or filter a list?",
+        "answer": "Comprehension"
+    }
+]

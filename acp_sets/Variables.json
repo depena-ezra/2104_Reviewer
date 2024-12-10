@@ -1,0 +1,22 @@
+[
+    {
+        "question": "What is used to store data in Python?",
+        "answer": "Variable"
+    },
+    {
+        "question": "What type of variable is accessible inside only the function it is declared in?",
+        "answer": "Local"
+    },
+    {
+        "question": "What keyword is used to make a variable accessible throughout the script?",
+        "answer": "Global"
+    },
+    {
+        "question": "What describes data that cannot be changed in Python?",
+        "answer": "Immutable"
+    },
+    {
+        "question": "What is the feature for specifying a variable’s type in Python?",
+        "answer": "Hinting"
+    }
+]
